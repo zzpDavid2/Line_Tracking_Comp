@@ -153,8 +153,8 @@ void track_line(double error, boolean go){
     u=100;
     }
 
-  if(u > 600){
-    u=600;
+  if(u > 550){
+    u=550;
     }
 //  Serial.println(String(error) + "  " + String(mean) +"  " + String(u) + "  " +String(int(u*(1.0-pid))) );
 //  u = 301;
@@ -166,8 +166,10 @@ void track_line(double error, boolean go){
 // else{
 //  u = 0;
 //  }
-  
-  Move(int(u*(1.0-pid)), int(u*(1.0+pid)));
+  if(go){
+    Move(int(u*(1.0-pid)), int(u*(1.0+pid)));
+    }
+
   
   
 //  Serial.println(String(error) + "  " + String(pid));
@@ -175,8 +177,12 @@ void track_line(double error, boolean go){
   return;
   }
 
-boolean go = false;
+boolean go = true;
 int s_prev =0;
+
+boolean back = false;
+
+boolean started = false;
 void loop()
 {
 
@@ -198,17 +204,25 @@ error = error/4;
 
 error -= 101.0;
 
-if(millis() >= t_i+ sample_int*2 ){
-  go = true;
-  }
+//if(millis() >= t_i+ sample_int*2 && !started){
+//  go = true;
+//  started = true;
+//  }
 //go = true;
 
 track_line(error, go);
 
 if (s >= 19500 && s_prev >= 19500){
-  Move(800,-800);
-  delay (370);
+//  if(!back){
+//    Move(800,-800);
+//    delay (370);
+//    Move(0,0);
+//    back = true;
+//   }else{
+//    go = false;
+//    }
   Move(0,0);
+  go = false;
 }
 
 s_prev = s;
